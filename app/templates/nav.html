@@ -1,0 +1,23 @@
+<md-sidenav md-component-id="left"
+  class="md-sidenav-left md-whiteframe-z2" md-is-locked-open="$mdMedia('gt-sm')"
+  tabindex="-1"
+>
+  <md-content flex role="navigation" class="md-default-theme">
+
+    <ul class="menu" flex>
+      <li ng-repeat="section in menu.sections">
+        <a href="{{section.href}}" ng-click="menu.activateSection(section)">
+          <h2 class="md-title">{{section.name}}</h2>
+        </a>
+
+        <ul class="menu-nested-list" ng-if="section.items.length > 0">
+          <li ng-repeat="item in section.items">
+            <a href="{{item.href}}" ng-click="menu.activateSectionItem(section, item)">
+              <h1 class="md-subhead">{{item.name}}</h1>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </md-content>
+</md-sidenav>
