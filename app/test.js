@@ -8,7 +8,7 @@ ng.module('app').run([
 
     } else {
       auth.login({
-        contact_number: 8882288822
+        contact_number: fizzz
       }).then(function () {
         console.log(auth.isLoggedIn());
       });
