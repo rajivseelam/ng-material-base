@@ -1,6 +1,6 @@
 ng.module('app').controller('main', [
-    '$scope',
-    function ($scope) {
-        
-    }
+  '$scope',
+  function ($scope) {
+  
+  }
 ]);

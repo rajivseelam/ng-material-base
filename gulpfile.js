@@ -10,49 +10,54 @@ var webserver = require('gulp-webserver');
 var stylus = require('gulp-stylus');
 
 gulp.task('app', function () {
-    streamqueue(
-        {objectMode: true},
-        gulp.src('app/main.js'),
-        gulp.src('app/templates/**/*.html').pipe(templateCache({module: 'app'})),
-        gulp.src(['app/**/*.js', '!app/main.js'])
-    ).pipe(concat('app.js'))
-     .pipe(gulp.dest('public/js'));
+  streamqueue(
+    {objectMode: true},
+    gulp.src('app/main.js'),
+    //gulp.src('app/tmpl/**/*.html').pipe(templateCache({module: 'app'})),
+    gulp.src(['app/*.js', '!app/test.js']),
+    gulp.src(['app/**/*.js', '!app/*.js']),
+    gulp.src('app/test.js')
+  ).pipe(concat('app.js'))
+   .pipe(gulp.dest('public/js'));
 
-    gulp.src('app/styl/app.styl')
-        .pipe(stylus({
-            'include css': true
-        }))
-        .pipe(gulp.dest('public/css'));
+  gulp.src('app/styl/app.styl')
+    .pipe(stylus({
+      'include css': true
+    }))
+    .pipe(gulp.dest('public/css'));
 
-    gulp.src('app/index.html').pipe(gulp.dest('public'));
+  gulp.src('app/tmpl/*')
+    .pipe(gulp.dest('public/tmpl'))
+
+  gulp.src('app/index.html').pipe(gulp.dest('public'));
 });
 
-gulp.task('bower', function () {
-    gulp.src(bowerFiles({filter: /^.*\.js$/}))
-        .pipe(concat('vendor.js'))
-        .pipe(gulp.dest('public/js'));
+gulp.task('vendor', function () {
+  gulp.src('vendor/**/*.js')
+    .pipe(concat('vendor.js'))
+    .pipe(gulp.dest('public/js'));
 
-    gulp.src(bowerFiles({filter: /^.*\.css$/}))
-        .pipe(concat('vendor.css'))
-        .pipe(gulp.dest('public/css'));
+  gulp.src('vendor/**/*.css')
+    .pipe(concat('vendor.css'))
+    .pipe(gulp.dest('public/css'));
 });
 
 gulp.task('clean', function () {
-    rimraf('public/**/*.*', function () {});
+  rimraf('public/**/*.*', function () {});
 });
 
 gulp.task('build', function () {
-    runSequence(
-        'clean',
-        ['bower', 'app']
-    )
+  runSequence(
+    'clean',
+    ['vendor', 'app']
+  )
 });
 
 gulp.task('serve', function () {
-    gulp.src('public')
-        .pipe(webserver())
+  gulp.src('public')
+    .pipe(webserver())
 });
 
 gulp.task('watch', ['build'], function () {
-    gulp.watch('app/**/*.*', ['app']);
+  gulp.watch('app/**/*.*', ['app']);
 });

@@ -2,41 +2,46 @@
 
 window.ng = window.angular;
 
-var app = ng.module('app', ['ngMaterial', 'ngAnimate']);
+var app = ng.module('app', ['ngMaterial', 'ngAnimate', 'angular-loading-bar']);
 
-app.controller('master', [
-    '$scope',
-    function ($scope) {
-        $scope.menu = {
-            sections: [
-                {
-                    name: 'Teams',
-                    href: '#teams',
-                    items: [
-                        {name: 'Droid', href: '#teams/droid'},
-                        {name: 'Api', href: '#teams/api'},
-                        {name: 'Design', href: '#teams/design'},
-                        {name: 'iOS', href: '#teams/ios'},
-                        {name: 'Socket', href: '#teams/socket'},
-                        {name: 'Marketing', href: '#teams/marketing'}
-                    ]
-                }
-            ],
-
-            active: {
-                section: null,
-                item: null,
-            },
-
-            activateSection: function (section) {
-                this.active.section = section;
-            },
-
-            activateSectionItem: function (section, item) {
-                this.active.item = item;
-            }
-        };
-
-        $scope.menu.activateSection($scope.menu.sections[0]);
+app.constant('config', {
+  api: {
+    base: 'http://api.gonomnom.in',
+    url: function (slug) {
+      return this.base + slug;
     }
+  },
+  pushstream: {
+    host: 'api.gonomnom.in',
+    port: 9080,
+    modes: 'websocket|eventsource|stream'
+  }
+});
+
+app.config([
+  '$httpProvider', 'cfpLoadingBarProvider',
+  function ($httpProvider, cfpLoadingBarProvider) {
+    $httpProvider.defaults.headers.common['X-Device-Id'] = 'web';
+    $httpProvider.defaults.headers.common['X-Device-Type'] = 'browser';
+    $httpProvider.defaults.headers.common['X-Push-Id'] = 'random';
+
+    cfpLoadingBarProvider.includeSpinner = false;
+    
+    $httpProvider.interceptors.push([
+      '$q', '$rootScope',
+      function ($q, $rootScope) {
+        return {
+          responseError: function (rejection) {
+            switch (rejection.status) {
+              case 401 : $rootScope.$broadcast('unauthorized', rejection); break;
+              case 403 : $rootScope.$broadcast('forbidden', rejection); break;
+              default  : console.log(rejection)
+            }
+            
+            return $q.reject(rejection);
+          }
+        };
+      }
+    ]);
+  }
 ]);
