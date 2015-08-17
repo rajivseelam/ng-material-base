@@ -3,7 +3,11 @@ ng.module('app').controller('master', [
   function ($scope, $rootScope, auth, api, socket) {
     auth.load();
 
-    $scope.isLoggedIn = auth.isLoggedIn;
+    $scope.isLoggedIn = function () {
+      return !auth.isLoggedIn();
+    };
+
+    // $scope.isLoggedIn = auth.isLoggedIn();
     $scope.user = auth.getUser;
     $scope.token = auth.getToken;
 
@@ -21,7 +25,7 @@ ng.module('app').controller('master', [
     });
 
     if ($scope.isLoggedIn()) {
-      $rootScope.$broadcast('loggedIn');
+      //$rootScope.$broadcast('loggedIn');
     }
   }
 ]);

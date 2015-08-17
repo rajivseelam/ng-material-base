@@ -26,7 +26,7 @@ ng.module('app').config([
         
         return {
           method: 'POST',
-          pattern: /^\/agent_login$/,
+          pattern: '/agent_login',
           translate: function (data) {
             return {
               access_token: data.auth_token,

@@ -30,8 +30,32 @@ ng.module('app')
       this['$get'] = [
         '$http', '$injector',
         function ($http, $injector) {
+          var patternToRegExp = function (pattern) {
+            if (! ng.isArray(pattern)) {
+              return patternToRegExp([pattern]);
+            }
+
+            return new RegExp([
+              '^',
+              pattern.map(function (p) {
+                return p.replace('*', '[^/]+')+'$';
+              }).join('|'),
+              '$'
+            ].join(''), 'i');
+          };
+
           var resolvedTranslators = translators.map(function (translator) {
-            return $injector.invoke(translator);
+            translator = $injector.invoke(translator);
+
+            if (! ng.isFunction(translator.test)) {
+              translator.regex = patternToRegExp(translator.pattern);
+              
+              translator.test = function (method, url, options) {
+                return method === translator.method && translator.regex.test(url);
+              };
+            }
+
+            return translator;
           });
 
           var api = function (method, url, options) {
@@ -43,12 +67,6 @@ ng.module('app')
 
               for (var i=0;i<resolvedTranslators.length;i++) {
                 var translator = resolvedTranslators[i];
-
-                if (! ng.isFunction(translator.test)) {
-                  translator.test = function (method, url, options) {
-                    return method === this.method && this.pattern.test(url);
-                  };
-                }
 
                 if (translator.test(method, url, options)) {
                   return translator.translate(data);

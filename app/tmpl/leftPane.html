@@ -1,0 +1,29 @@
+<md-sidenav md-component-id="left"
+  class="md-sidenav-left md-whiteframe-z2" md-is-locked-open="$mdMedia('gt-sm')"
+  tabindex="-1"
+>
+  <md-content flex layout="column" layout-padding role="navigation"
+    class="md-default-theme" ng-controller="leftPane"
+  >
+    <div layout="row" layout-align="start center" layout-margin>
+      <h2 class="md-title" flex="20">(3)</h2>
+      <md-input-container flex>
+        <input type="text" ng-model="customer.name">
+      </md-input-container>
+    </div>
+    
+    <md-divider></md-divider>
+
+    <md-list>
+      <md-subheader>Address ({{addresses.length}})</md-subheader>
+      <md-list-item ng-repeat="a in addresses" style="min-height: 1em">
+        <a href="#" style="text-decoration: none;"><small>{{a}}</small></a>
+      </md-list-item>
+    </md-list>
+
+    <md-divider></md-divider>
+
+    
+
+  </md-content>
+</md-sidenav>

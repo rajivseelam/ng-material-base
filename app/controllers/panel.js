@@ -1,4 +1,4 @@
-ng.module('app').controller('nav', [
+ng.module('app').controller('panel', [
   '$scope',
   function ($scope) {
     

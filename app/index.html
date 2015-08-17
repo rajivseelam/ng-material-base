@@ -12,7 +12,7 @@
 </head>
 <body>
   <main ng-app="app" ng-cloak="true" ng-controller="master" layout="row" >
-    <ng-include src="'tmpl/nav.html'" ng-if="isLoggedIn()">
+    <ng-include src="'tmpl/leftPane.html'" ng-if="isLoggedIn()">
     </ng-include>
     <ng-include src="'tmpl/main.html'" flex layout="column" layout-padding ng-if="isLoggedIn()">
     </ng-include>
